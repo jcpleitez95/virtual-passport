@@ -151,6 +151,7 @@ function renderPictures(picture){
 
 let newPictureButton = document.querySelector('.add-picture')
 let newUserButton = document.querySelector('.add-user')
+let deleteUserButton = document.querySelector('.delete-user')
 let rightDiv = document.querySelector('.right-side-bar')
 
 newPictureButton.addEventListener('click', () =>{
@@ -164,21 +165,64 @@ newPictureButton.addEventListener('click', () =>{
     name="image_url"
     placeholder="Image URl..."
     />
+    <br>
     <input
     class="picture-input"
     type="text"
     name="caption"
     placeholder="Caption..."
     />
-    <label for="cars">Choose a Traveler:</label>
+    <br>
+    <label for="travelers">Choose a Traveler:</label>
            <select name="travelers" id="travelers">
            </select>
+    <br>
     <button class="picture-form-button" type="submit">Post</button>`
+
+    fetch('http://localhost:3000/users')
+    .then(response => response.json())
+    .then(users => {
+    users.forEach(user => {
+        renderUser(user)
+        })
+    })
+
+    function renderUser(user) {
+        let option = document.createElement('option')
+        option.classList.add('option')
+        option.dataset.id = user.id
+        option.innerText = user.name
+        let select = document.querySelector('#travelers')
+        select.append(option)
+    }
+
     rightDiv.innerHTML = ''
     rightDiv.append(pictureForm)
+
+    pictureForm.addEventListener('submit', function (event) {
+        event.preventDefault()
+        let option = document.querySelector('.option')
+        
+        fetch('http://localhost:3000/pictures', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            },
+            body: JSON.stringify ({
+                "image_url": event.target.image_url.value,
+                "caption": event.target.caption.value,
+                "user_id": option.dataset.id,
+                "likes": 0
+            })
+        })
+        .then(response => response.json())
+        .then(picture => renderPictures(picture))
+        event.target.reset()
+    })
 })
 
-newUserButton.addEventListener('click', (event) => {
+newUserButton.addEventListener('click', () => {
     let userForm = document.createElement('form')
     userForm.classList.add('user-form')
     userForm.innerHTML =  `
@@ -189,17 +233,53 @@ newUserButton.addEventListener('click', (event) => {
     name="name"
     placeholder="Name..."
     />
+    <br>
     <input
     class="user-input"
     type="text"
     name="profile-picture"
     placeholder="Profile Picture URL..."
     />
+    <br>
     <button class="new-user-form-button" type="submit">Create</button>`
     rightDiv.innerHTML = ''
     rightDiv.append(userForm)
 })
 
-let pictureFormButton = document.querySelector('.picture-form-button')
+deleteUserButton.addEventListener('click', () => {
+    let deleteForm = document.createElement('form')
+    deleteForm.classList.add('delete-form')
+    deleteForm.innerHTML = `
+    <h2>Delete Traveler</h2>
+    <label for="travelers">Choose a Traveler:</label>
+    <select name="travelers" id="travelers">
+    </select>
+    <br>
+    <button class="delete-user-form-button" type="submit">Bye Traveler</button>`
+    
+    fetch('http://localhost:3000/users')
+    .then(response => response.json())
+    .then(users => {
+    users.forEach(user => {
+        renderUser(user)
+        })
+    })
+
+    function renderUser(user) {
+        let option = document.createElement('option')
+        option.innerText = user.name  
+        let select = document.querySelector('#travelers')
+        select.append(option)
+    }
+
+    rightDiv.innerHTML = ''
+    rightDiv.append(deleteForm)
+})
+
+
 let newUserFormButton = document.querySelector('.new-user-form-button')
 let updateFormButton = document.querySelector('.update-form-button')
+let deleteUserFormButton = document.querySelector('.delete-user-form-button')
+
+
+
