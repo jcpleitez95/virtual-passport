@@ -4,25 +4,32 @@ const main = document.querySelector('.main')
 
 
 fetch('http://localhost:3000/pictures')
-.then(response => response.json())
-.then(pictures => {
-    pictures.forEach(picture => {
-        if (picture.user == null) {
-            fetch(`http://localhost:3000/pictures/${picture.id}`, {
-                method: 'DELETE',
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json"
-                }
-            })
             .then(response => response.json())
-        }
-        else {renderPictures(picture)}
-    })
-})
-
+            .then(pictures => {
+                main.innerHTML = ''
+                pictures.forEach(picture => {
+                    if (picture.user == null) {
+                        fetch(`http://localhost:3000/pictures/${picture.id}`, {
+                            method: 'DELETE',
+                        })
+                        
+                    }
+                    
+                    else {
+                    fetch('http://localhost:3000/pictures')
+                    .then(response => response.json())
+                    .then(pictures => {
+                        main.innerHTML = ''
+                        pictures.forEach(picture => {renderPictures(picture)})
+                        
+                    })
+                }
+                })
+            
+            })
 
 function renderPictures(picture){
+
     let imageContainer = document.createElement('div')
     imageContainer.classList.add("image-container")
     let imgCard = document.createElement('div')
@@ -50,7 +57,7 @@ function renderPictures(picture){
     
     let likeButton = document.createElement("button")
     likeButton.classList.add('like-button')
-    likeButton.innerText = "♥"
+    likeButton.innerText = "👍"
     likeButton.dataset.id = picture.id
 
     let div4 = document.createElement('form')
@@ -63,7 +70,7 @@ function renderPictures(picture){
     name="comment"
     placeholder="Add a comment..."
     />
-    <button class="comment-button" type="submit">Post</button>
+    <button class="comment-button" type="submit">💬</button>
     `
 
     const ul = document.createElement('ul')
@@ -93,15 +100,16 @@ function renderPictures(picture){
             div3.innerText = `${moreLikes} Likes`
         })
     })  
-
+  
     let buttonContainer = document.createElement('div')
+    buttonContainer.classList.add('button-container')
     let deleteButton = document.createElement('button')
     deleteButton.classList.add('delete-button')
     deleteButton.dataset.id = picture.id
-    deleteButton.innerText = "Delete"
+    deleteButton.innerText = "🗑️"
     let updateButton = document.createElement('button')
     updateButton.classList.add('update-button')
-    updateButton.innerText = "Update"
+    updateButton.innerText = "📝"
     buttonContainer.append(deleteButton, updateButton)
 
     div2.append(div3, likeButton)
@@ -153,6 +161,8 @@ function renderPictures(picture){
         name="caption"
         placeholder="Caption..."
         />
+        <br>
+        <br>
         <button class="update-form-button" type="submit">Post</button>`
         rightDiv.innerHTML = ''
         rightDiv.append(updateForm)
@@ -197,6 +207,7 @@ newPictureButton.addEventListener('click', () =>{
     placeholder="Image URl..."
     />
     <br>
+    <br>
     <input
     class="picture-input"
     type="text"
@@ -204,9 +215,11 @@ newPictureButton.addEventListener('click', () =>{
     placeholder="Caption..."
     />
     <br>
+    <br>
     <label for="travelers">Choose a Traveler:</label>
            <select name="travelers" id="travelers">
            </select>
+    <br>
     <br>
     <button class="picture-form-button" type="submit">Post</button>`
 
@@ -248,8 +261,8 @@ newPictureButton.addEventListener('click', () =>{
         })
         .then(response => response.json())
         .then(picture => renderPictures(picture))
+        event.target.reset()
     })
-        
 })
 
 newUserButton.addEventListener('click', () => {
@@ -264,12 +277,6 @@ newUserButton.addEventListener('click', () => {
     placeholder="Name..."
     />
     <br>
-    <input
-    class="user-input"
-    type="text"
-    name="profile-picture"
-    placeholder="Profile Picture URL..."
-    />
     <br>
     <button class="new-user-form-button" type="submit">Create</button>`
     rightDiv.innerHTML = ''
@@ -302,6 +309,7 @@ deleteUserButton.addEventListener('click', () => {
     <select name="travelers" id="travelers">
     </select>
     <br>
+    <br>
     <button class="delete-user-form-button" type="submit">Bye Traveler</button>`
     
     fetch('http://localhost:3000/users')
@@ -326,19 +334,41 @@ deleteUserButton.addEventListener('click', () => {
 
     deleteForm.addEventListener('submit', function (event) {
         event.preventDefault()
+        let option = document.querySelector('.option')
+        const id = event.target.travelers.options[event.target.travelers.selectedIndex].dataset.id
         if(event.target.matches('.delete-form')) {
             console.log('deleted')
-            const id = event.target.travelers.options[event.target.travelers.selectedIndex].dataset.id
             fetch(`http://localhost:3000/users/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json"
-            }
-         })
-         .then(response => response.json())
+            })            
+            event.target.travelers.options[event.target.travelers.selectedIndex].remove()
         }
         event.target.reset()
+        
+        fetch('http://localhost:3000/pictures')
+            .then(response => response.json())
+            .then(pictures => {
+                main.innerHTML = ''
+                pictures.forEach(picture => {
+                    if (picture.user == null) {
+                        fetch(`http://localhost:3000/pictures/${picture.id}`, {
+                            method: 'DELETE',
+                        })
+                        
+                    }
+                    
+                    else {
+                    fetch('http://localhost:3000/pictures')
+                    .then(response => response.json())
+                    .then(pictures => {
+                        main.innerHTML = ''
+                        pictures.forEach(picture => {renderPictures(picture)})
+                        
+                    })
+                }
+                })
+            
+            })
     })
 })
 
@@ -353,12 +383,15 @@ updateUser.addEventListener('click', () => {
     <select name="travelers" id="travelers">
     </select>
     <br>
+    <br>
     <input
     class="user-input"
     type="text"
     name="name"
     placeholder="Update Name..."
     />
+    <br>
+    <br>
     <button class="update-user-form-button" type="submit">Update Traveler</button>`
 
     fetch('http://localhost:3000/users')
