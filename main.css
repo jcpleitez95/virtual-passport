@@ -416,3 +416,26 @@ outline: none;
     transition: color 300ms;
     cursor: pointer;
 }
+
+#plane {
+    background-color: lightblue;
+    height: 20px;
+    position: absolute;
+    width: 40px;
+  }
+  
+  #game {
+    background-color: lightblue;
+    height: 25px;
+    margin: 0px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: auto;
+  }
+  
+  #easter-egg{
+      width: 100%;
+      margin: 0px 0px;
+
+  }

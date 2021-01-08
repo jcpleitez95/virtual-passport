@@ -441,5 +441,35 @@ let newUserForm = document.querySelector('.new-user-form')
 let deleteUserForm = document.querySelector('.delete-user-form')
 
 
+let dodger = document.getElementById("plane");
+console.log(dodger)
 
+function moveDodgerLeft() {
+    let leftNumbers = dodger.style.left.replace('px', '');
+    let left = parseInt(leftNumbers, 10);
+  
+    if (left > 0) {
+      dodger.style.left = `${left - 2}px`;
+    }
+  }
 
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "ArrowLeft") {
+      moveDodgerLeft();
+    }
+  });
+
+  function moveDodgerRight() {
+    let leftNumbers = dodger.style.left.replace("px", "");
+    let left = parseInt(leftNumbers, 10);
+  
+    if (left > 0) {
+      dodger.style.left = `${left + 2}px`;
+    }
+  }
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "ArrowRight") {
+      moveDodgerRight();
+    }
+  });
