@@ -439,3 +439,34 @@ outline: none;
       margin: 0px 0px;
 
   }
+
+  .picture-form{
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 25%;
+    text-align: center;
+  }
+  .update-form{
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 25%;
+    text-align: center;
+  }
+  .user-form{
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 25%;
+    text-align: center;
+  }
+  .update-user-form{
+    background-color:lightblue;
+    border: 1px solid black;
+    border-radius: 25%;
+    text-align: center;
+  }
+  .delete-form{
+    background: red;
+    border: 1px solid black;
+    border-radius: 25%;
+    text-align: center;
+  }
